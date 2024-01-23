@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private Sprite wrongTile;
 
     [Header("Game Manager")]
-    public GameManager gameManager;
+    public GameManagerGM gameManager;
     private SpriteRenderer spriteRenderer;
     
     private void OnMouseOver()

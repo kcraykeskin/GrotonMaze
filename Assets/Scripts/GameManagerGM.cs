@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
-public class GameManager : MonoBehaviour
+public class GameManagerGM : MonoBehaviour
 {
     [SerializeField] private generator generator;
     [SerializeField] private Transform tilePrefab;
@@ -25,14 +27,14 @@ public class GameManager : MonoBehaviour
     private float phase1time;
     private float phase2time;
     public int currentTile=0;
-
+    public int length = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         path = generator.generatepath();
         Debug.Log(path);
-        int length = path.Count(value => value != 0);
+        length = path.Count(value => value != 0);
         lengthtext.text = "Length: " + length.ToString();
         CreateGameBoard();
     }
@@ -136,6 +138,8 @@ public class GameManager : MonoBehaviour
         text1.gameObject.SetActive(true);
         text2.gameObject.SetActive(true);
         timers.gameObject.SetActive(true);
+        StartCoroutine(SendResultsToServer());
+
     }
 
     private void goBack()
@@ -147,4 +151,36 @@ public class GameManager : MonoBehaviour
 
         }
     }
+
+
+
+    IEnumerator SendResultsToServer()
+    {
+        string username = UserManager.Instance.Username; // Get the logged-in username
+
+        WWWForm form = new WWWForm();
+        form.AddField("username", username);
+        form.AddField("length", length.ToString());
+        form.AddField("initialTries", initialTries);
+        form.AddField("wrongClicks", wrongClicks);
+        form.AddField("phase1time", Mathf.FloorToInt(phase1time).ToString());
+        form.AddField("phase2time", Mathf.FloorToInt(phase2time).ToString());
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/Unity/submit_results.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log("Error: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Results submitted successfully.");
+            }
+        }
+    }
+
+
+
 }

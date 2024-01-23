@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Login.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Register.unity
+    guid: 99df33814e8c8f0409afcc934bab0c57
+  - enabled: 1
+    path: Assets/Scenes/GrotonMaze.unity
+    guid: 609f3e0337c93c14bbd3fa6cd740127d
   m_configObjects: {}
